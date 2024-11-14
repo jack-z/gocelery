@@ -64,11 +64,13 @@ func (w *CeleryWorker) StartWorkerWithContext(ctx context.Context) {
 					}
 					defer releaseResultMessage(resultMsg)
 
-					// push result to backend
-					err = w.backend.SetResult(taskMessage.ID, resultMsg)
-					if err != nil {
-						log.Printf("failed to push result: %+v", err)
-						continue
+					if w.backend != nil {
+						// push result to backend
+						err = w.backend.SetResult(taskMessage.ID, resultMsg)
+						if err != nil {
+							log.Printf("failed to push result: %+v", err)
+							continue
+						}
 					}
 				}
 			}
